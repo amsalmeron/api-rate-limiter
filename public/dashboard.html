@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Rate Limiter Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📊 API Rate Limiter Dashboard</h1>
+      <p class="subtitle">Real-time analytics and monitoring</p>
+      <button id="refreshBtn" class="refresh-btn">🔄 Refresh Data</button>
+    </header>
+
+    <!-- Overview Stats -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-content">
+          <div class="stat-label">Total Requests (24h)</div>
+          <div class="stat-value" id="totalRequests">-</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <div class="stat-label">Success Rate</div>
+          <div class="stat-value" id="successRate">-</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-content">
+          <div class="stat-label">Avg Response Time</div>
+          <div class="stat-value" id="avgResponseTime">-</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-content">
+          <div class="stat-label">Most Hit Endpoint</div>
+          <div class="stat-value" id="mostHitEndpoint">-</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Charts -->
+    <section class="charts-section">
+      <div class="chart-container">
+        <h2>📊 Hourly Request Volume</h2>
+        <canvas id="hourlyChart"></canvas>
+      </div>
+
+      <div class="chart-container">
+        <h2>🎯 Requests by Endpoint</h2>
+        <canvas id="endpointChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Tables -->
+    <section class="tables-section">
+      <div class="table-container">
+        <h2>🏆 Top Consumers (24h)</h2>
+        <table id="consumersTable">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Tier</th>
+              <th>Requests</th>
+              <th>Rate Limited</th>
+            </tr>
+          </thead>
+          <tbody id="consumersBody">
+            <tr><td colspan="4" class="loading">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-container">
+        <h2>📍 Endpoint Statistics</h2>
+        <table id="endpointsTable">
+          <thead>
+            <tr>
+              <th>Endpoint</th>
+              <th>Total Requests</th>
+              <th>Success Rate</th>
+              <th>Avg Response Time</th>
+            </tr>
+          </thead>
+          <tbody id="endpointsBody">
+            <tr><td colspan="4" class="loading">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <p>Last updated: <span id="lastUpdated">-</span></p>
+      <p>Auto-refresh every 30 seconds</p>
+    </footer>
+  </div>
+
+  <script src="charts.js"></script>
+</body>
+</html>
