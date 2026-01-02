@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14-alpine
+    container_name: rate-limiter-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rate_limiter
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations/001_initial_schema.sql:/docker-entrypoint-initdb.d/001_initial_schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: rate-limiter-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Node.js Application
+  app:
+    build: .
+    container_name: rate-limiter-app
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: rate_limiter
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      TIER_FREE: 100
+      TIER_PRO: 1000
+      TIER_ENTERPRISE: 10000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
